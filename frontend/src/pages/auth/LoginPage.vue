@@ -25,6 +25,8 @@ async function handleLogin() {
     } else {
       router.push('/onboarding')
     }
+  } else {
+    error.value = result.message || '로그인에 실패했습니다.'
   }
 }
 </script>

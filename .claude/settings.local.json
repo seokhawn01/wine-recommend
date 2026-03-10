@@ -26,7 +26,15 @@
       "Bash(npm cache:*)",
       "Bash(npm config:*)",
       "Bash(npm run:*)",
-      "Bash(ls:*)"
+      "Bash(ls:*)",
+      "Bash(netstat -ano 2>/dev/null | grep -E \":5173|:5174\" | head -5 || echo \"포트 미사용\")",
+      "mcp__playwright__browser_navigate",
+      "mcp__playwright__browser_console_messages",
+      "mcp__playwright__browser_evaluate",
+      "mcp__playwright__browser_fill_form",
+      "mcp__playwright__browser_click",
+      "mcp__playwright__browser_network_requests",
+      "Bash(pkill -f \"vite --port 5173\" 2>/dev/null; sleep 1; echo \"서버 종료\")"
     ]
   }
 }

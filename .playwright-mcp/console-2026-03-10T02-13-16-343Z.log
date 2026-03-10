@@ -1,0 +1,40 @@
+[  222654ms] [ERROR] [vite] Error: Invalid supabaseUrl: Must be a valid HTTP or HTTPS URL.
+    at validateSupabaseUrl (http://localhost:5173/node_modules/.vite/deps/@supabase_supabase-js.js?v=13f69b67:11604:49)
+    at new SupabaseClient (http://localhost:5173/node_modules/.vite/deps/@supabase_supabase-js.js?v=13f69b67:11641:21)
+    at createClient (http://localhost:5173/node_modules/.vite/deps/@supabase_supabase-js.js?v=13f69b67:11820:10)
+    at http://localhost:5173/src/lib/supabaseClient.js:6:25 @ http://localhost:5173/@vite/client:808
+[  222654ms] [ERROR] [vite] Failed to reload /src/pages/auth/LoginPage.vue. This could be due to syntax errors or importing non-existent modules. (see errors above) @ http://localhost:5173/@vite/client:808
+[  222655ms] [ERROR] [vite] Error: Invalid supabaseUrl: Must be a valid HTTP or HTTPS URL.
+    at validateSupabaseUrl (http://localhost:5173/node_modules/.vite/deps/@supabase_supabase-js.js?v=13f69b67:11604:49)
+    at new SupabaseClient (http://localhost:5173/node_modules/.vite/deps/@supabase_supabase-js.js?v=13f69b67:11641:21)
+    at createClient (http://localhost:5173/node_modules/.vite/deps/@supabase_supabase-js.js?v=13f69b67:11820:10)
+    at http://localhost:5173/src/lib/supabaseClient.js:6:25 @ http://localhost:5173/@vite/client:808
+[  222655ms] [ERROR] [vite] Failed to reload /src/pages/OnboardingPage.vue. This could be due to syntax errors or importing non-existent modules. (see errors above) @ http://localhost:5173/@vite/client:808
+[  222655ms] [ERROR] [vite] Error: Invalid supabaseUrl: Must be a valid HTTP or HTTPS URL.
+    at validateSupabaseUrl (http://localhost:5173/node_modules/.vite/deps/@supabase_supabase-js.js?v=13f69b67:11604:49)
+    at new SupabaseClient (http://localhost:5173/node_modules/.vite/deps/@supabase_supabase-js.js?v=13f69b67:11641:21)
+    at createClient (http://localhost:5173/node_modules/.vite/deps/@supabase_supabase-js.js?v=13f69b67:11820:10)
+    at http://localhost:5173/src/lib/supabaseClient.js:6:25 @ http://localhost:5173/@vite/client:808
+[  222655ms] [ERROR] [vite] Failed to reload /src/pages/MyPage.vue. This could be due to syntax errors or importing non-existent modules. (see errors above) @ http://localhost:5173/@vite/client:808
+[  222655ms] [ERROR] [vite] Error: Invalid supabaseUrl: Must be a valid HTTP or HTTPS URL.
+    at validateSupabaseUrl (http://localhost:5173/node_modules/.vite/deps/@supabase_supabase-js.js?v=13f69b67:11604:49)
+    at new SupabaseClient (http://localhost:5173/node_modules/.vite/deps/@supabase_supabase-js.js?v=13f69b67:11641:21)
+    at createClient (http://localhost:5173/node_modules/.vite/deps/@supabase_supabase-js.js?v=13f69b67:11820:10)
+    at http://localhost:5173/src/lib/supabaseClient.js:6:25 @ http://localhost:5173/@vite/client:808
+[  222655ms] [ERROR] [vite] Failed to reload /src/components/layout/Navbar.vue. This could be due to syntax errors or importing non-existent modules. (see errors above) @ http://localhost:5173/@vite/client:808
+[  222655ms] [ERROR] [vite] Error: Invalid supabaseUrl: Must be a valid HTTP or HTTPS URL.
+    at validateSupabaseUrl (http://localhost:5173/node_modules/.vite/deps/@supabase_supabase-js.js?v=13f69b67:11604:49)
+    at new SupabaseClient (http://localhost:5173/node_modules/.vite/deps/@supabase_supabase-js.js?v=13f69b67:11641:21)
+    at createClient (http://localhost:5173/node_modules/.vite/deps/@supabase_supabase-js.js?v=13f69b67:11820:10)
+    at http://localhost:5173/src/lib/supabaseClient.js:6:25 @ http://localhost:5173/@vite/client:808
+[  222656ms] [ERROR] [vite] Failed to reload /src/pages/auth/SignupPage.vue. This could be due to syntax errors or importing non-existent modules. (see errors above) @ http://localhost:5173/@vite/client:808
+[  223077ms] Error: Invalid supabaseUrl: Must be a valid HTTP or HTTPS URL.
+    at validateSupabaseUrl (http://localhost:5173/node_modules/.vite/deps/@supabase_supabase-js.js?v=78767b5d:11604:49)
+    at new SupabaseClient (http://localhost:5173/node_modules/.vite/deps/@supabase_supabase-js.js?v=78767b5d:11641:21)
+    at createClient (http://localhost:5173/node_modules/.vite/deps/@supabase_supabase-js.js?v=78767b5d:11820:10)
+    at http://localhost:5173/src/lib/supabaseClient.js:6:25
+[  226436ms] Error: Invalid supabaseUrl: Must be a valid HTTP or HTTPS URL.
+    at validateSupabaseUrl (http://localhost:5173/node_modules/.vite/deps/@supabase_supabase-js.js?v=78767b5d:11604:49)
+    at new SupabaseClient (http://localhost:5173/node_modules/.vite/deps/@supabase_supabase-js.js?v=78767b5d:11641:21)
+    at createClient (http://localhost:5173/node_modules/.vite/deps/@supabase_supabase-js.js?v=78767b5d:11820:10)
+    at http://localhost:5173/src/lib/supabaseClient.js:6:25

@@ -1,44 +1,69 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import { mockUserProfile } from '@/mock/data'
+import { supabase } from '@/lib/supabaseClient'
 
 export const useAuthStore = defineStore('auth', () => {
-  // Mock 상태 — 백엔드 API 연동 후 Supabase Auth로 교체
   const user = ref(null)
   const loading = ref(false)
 
   const isLoggedIn = computed(() => !!user.value)
   const isOnboardingDone = computed(() => user.value?.onboardingDone ?? false)
 
-  function login(email, password) {
-    loading.value = true
-    // Mock 로그인
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        user.value = { ...mockUserProfile, email }
-        loading.value = false
-        resolve({ success: true })
-      }, 800)
+  // Supabase 사용자 객체를 앱 형식으로 변환
+  function mapUser(supabaseUser) {
+    return {
+      id: supabaseUser.id,
+      email: supabaseUser.email,
+      nickname: supabaseUser.user_metadata?.nickname ?? supabaseUser.email.split('@')[0],
+      onboardingDone: supabaseUser.user_metadata?.onboarding_done ?? false,
+    }
+  }
+
+  // 앱 시작 시 기존 세션 복원 + 상태 변경 감지
+  async function init() {
+    const { data: { session } } = await supabase.auth.getSession()
+    if (session?.user) {
+      user.value = mapUser(session.user)
+    }
+    supabase.auth.onAuthStateChange((_event, session) => {
+      user.value = session?.user ? mapUser(session.user) : null
     })
   }
 
-  function signup(email, password, nickname) {
+  async function login(email, password) {
     loading.value = true
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        user.value = {
-          ...mockUserProfile,
-          email,
-          nickname,
-          onboardingDone: false,
-        }
-        loading.value = false
-        resolve({ success: true })
-      }, 800)
-    })
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+      if (error) throw error
+      user.value = mapUser(data.user)
+      return { success: true }
+    } catch (error) {
+      return { success: false, message: error.message }
+    } finally {
+      loading.value = false
+    }
   }
 
-  function logout() {
+  async function signup(email, password, nickname) {
+    loading.value = true
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: { data: { nickname, onboarding_done: false } },
+      })
+      if (error) throw error
+      user.value = mapUser(data.user)
+      return { success: true }
+    } catch (error) {
+      return { success: false, message: error.message }
+    } finally {
+      loading.value = false
+    }
+  }
+
+  async function logout() {
+    await supabase.auth.signOut()
     user.value = null
   }
 
@@ -53,6 +78,7 @@ export const useAuthStore = defineStore('auth', () => {
     loading,
     isLoggedIn,
     isOnboardingDone,
+    init,
     login,
     signup,
     logout,

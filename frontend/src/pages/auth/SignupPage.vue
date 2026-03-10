@@ -31,6 +31,8 @@ async function handleSignup() {
   const result = await authStore.signup(email.value, password.value, nickname.value)
   if (result.success) {
     router.push('/onboarding')
+  } else {
+    error.value = result.message || '회원가입에 실패했습니다.'
   }
 }
 </script>

@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>와인 x 콜키지 매칭 서비스 MVP PRD</title>
+<style>
+  body {
+    font-family: 'Malgun Gothic', '맑은 고딕', Arial, sans-serif;
+    font-size: 11pt;
+    line-height: 1.7;
+    color: #1a1a1a;
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 0 40px;
+  }
+  h1 {
+    font-size: 22pt;
+    font-weight: bold;
+    color: #1a1a1a;
+    border-bottom: 3px solid #722F37;
+    padding-bottom: 10px;
+    margin-top: 40px;
+    margin-bottom: 20px;
+  }
+  h2 {
+    font-size: 16pt;
+    font-weight: bold;
+    color: #722F37;
+    border-bottom: 1px solid #cccccc;
+    padding-bottom: 6px;
+    margin-top: 36px;
+    margin-bottom: 14px;
+  }
+  h3 {
+    font-size: 13pt;
+    font-weight: bold;
+    color: #333333;
+    margin-top: 24px;
+    margin-bottom: 10px;
+  }
+  p {
+    margin: 8px 0;
+  }
+  strong {
+    font-weight: bold;
+  }
+  code {
+    font-family: 'Consolas', 'D2Coding', monospace;
+    background: #f4f4f4;
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-size: 10pt;
+    color: #c0392b;
+  }
+  pre {
+    font-family: 'Consolas', 'D2Coding', monospace;
+    background: #f8f8f8;
+    border: 1px solid #e0e0e0;
+    border-left: 4px solid #722F37;
+    padding: 14px 18px;
+    font-size: 9.5pt;
+    line-height: 1.6;
+    overflow-x: auto;
+    white-space: pre;
+    margin: 12px 0;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 14px 0;
+    font-size: 10.5pt;
+  }
+  th {
+    background: #722F37;
+    color: white;
+    padding: 8px 12px;
+    text-align: left;
+    font-weight: bold;
+  }
+  td {
+    padding: 7px 12px;
+    border: 1px solid #cccccc;
+    vertical-align: top;
+  }
+  tr:nth-child(even) td {
+    background: #fafafa;
+  }
+  hr {
+    border: none;
+    border-top: 1px solid #dddddd;
+    margin: 28px 0;
+  }
+  ul {
+    margin: 8px 0;
+    padding-left: 24px;
+  }
+  li {
+    margin: 4px 0;
+  }
+  blockquote {
+    border-left: 4px solid #cccccc;
+    margin: 10px 0;
+    padding: 6px 16px;
+    color: #555555;
+    background: #fafafa;
+    font-size: 10.5pt;
+  }
+  .badge {
+    display: inline-block;
+    background: #722F37;
+    color: white;
+    padding: 1px 7px;
+    border-radius: 3px;
+    font-size: 9.5pt;
+    font-weight: bold;
+    font-family: monospace;
+  }
+  .page-break {
+    page-break-before: always;
+  }
+</style>
+</head>
+<body>
+
+<h1>와인 x 콜키지 매칭 서비스 MVP PRD</h1>
+
+<h2>1. 핵심 정보</h2>
+
+<p><strong>목적</strong>: 콜키지 식당을 방문할 때 가져갈 와인에 잘 어울리는 메뉴를 AI 소믈리에가 추천해준다.</p>
+<p><strong>사용자</strong>: 와인을 즐기지만 메뉴 페어링에 자신이 없는 20~40대 직장인, 콜키지 문화에 관심 있는 소비자.</p>
+
+<hr>
+
+<h2>2. 사용자 여정</h2>
+
+<p>핵심 흐름: <strong>와인 취향 설정 → 근처 콜키지 식당 탐색 → 와인/상황 선택 → 메뉴별 페어링 점수 확인 → 메뉴 선택 → AI 소믈리에 설명</strong></p>
+
+<pre>1. 앱 최초 실행 (랜딩 페이지)
+   └─ 회원가입 클릭
+       ↓
+
+2. 회원가입 페이지
+   └─ 가입 완료 → 온보딩 페이지로 자동 이동
+       ↓
+
+3. 온보딩 페이지 (취향 설정)
+   └─ 와인 취향 슬라이더 + 못먹는 음식 선택 → 저장
+       ↓
+
+4. 홈 페이지 (주변 콜키지 식당 목록)
+   └─ GPS 기반 식당 목록 표시 (메뉴 데이터 있는 식당만 노출)
+       ├─ 필터/정렬 적용 → 목록 갱신
+       └─ 식당 카드 클릭
+           ↓
+
+5. 식당 상세 페이지
+   ├─ 와인 선택 (내 와인 컬렉션 또는 취향 프로파일 기본값 사용)
+   ├─ 상황 선택 태그 (데이트 / 친구 모임 / 비즈니스 / 혼술 / 가족 모임)
+   └─ 메뉴 목록 + 페어링 점수 표시 → 메뉴 선택
+       ↓
+
+6. AI 매칭 페이지 (메뉴 선택 후)
+   └─ 선택한 메뉴와 와인의 페어링 이유 + 상황 맞춤 소믈리에 설명 표시
+       └─ 방문 후 피드백 제출 (좋아요/별로 + 자유 텍스트 후기) → 취향 벡터 자동 업데이트
+
+7. 마이페이지
+   ├─ 취향 프로파일 수정
+   ├─ 취향 변화 시각화 (레이더 차트 시계열)
+   └─ 내 와인 컬렉션 (와인 목록 조회/추가/삭제)</pre>
+
+<hr>
+
+<h2>3. 기능 명세</h2>
+
+<h3>3.1 핵심 기능</h3>
+
+<table>
+  <tr>
+    <th>ID</th>
+    <th>기능명</th>
+    <th>설명</th>
+    <th>관련 페이지</th>
+  </tr>
+  <tr><td><strong>F-01</strong></td><td>취향 온보딩</td><td>당도/산미/바디감/탄닌 슬라이더 + 선호 향 + 못먹는 음식 선택</td><td>온보딩</td></tr>
+  <tr><td><strong>F-02</strong></td><td>취향 슬라이더 UI</td><td>4개 슬라이더 + 레이더 차트 실시간 시각화</td><td>온보딩, 마이페이지</td></tr>
+  <tr><td><strong>F-03</strong></td><td>취향 수정</td><td>마이페이지에서 취향 프로파일 언제든지 수정</td><td>마이페이지</td></tr>
+  <tr><td><strong>F-04</strong></td><td>콜키지 식당 검색</td><td>사용자가 선정한 지역의 GPS 기반 반경 2km 내 콜키지 허용 식당 목록 (메뉴 있는 식당만 표시)</td><td>홈</td></tr>
+  <tr><td><strong>F-05</strong></td><td>식당 상세 조회</td><td>메뉴 목록 + 페어링 점수 표시, 콜키지 조건/운영시간 표시</td><td>식당 상세</td></tr>
+  <tr><td><strong>F-06</strong></td><td>필터 및 정렬</td><td>음식 카테고리/콜키지 무료 여부/거리순/별점순</td><td>홈</td></tr>
+  <tr><td><strong>F-11</strong></td><td>메뉴 맛 프로파일 벡터화</td><td>메뉴별 6차원 맛 벡터 생성 후 pgvector 저장 (운영자 수기 입력 후 백그라운드)</td><td>내부 처리</td></tr>
+  <tr><td><strong>F-12</strong></td><td>메뉴 페어링 점수 표시</td><td>식당 상세에서 각 메뉴에 와인 특성 기준 매칭 점수 아이콘 표시</td><td>식당 상세</td></tr>
+  <tr><td><strong>F-13</strong></td><td>AI 페어링 설명 생성</td><td>선택한 메뉴, 와인, 상황을 반영한 소믈리에 스타일 설명 2~3문장</td><td>AI 매칭</td></tr>
+  <tr><td><strong>F-14</strong></td><td>취향 진화 트래킹</td><td>피드백 + 텍스트 후기 기반 취향 벡터 업데이트 + 시계열 레이더 차트 시각화</td><td>마이페이지, AI 매칭</td></tr>
+  <tr><td><strong>F-15</strong></td><td>와인 컬렉션 관리</td><td>마이페이지에서 내 와인 목록 조회/추가/삭제</td><td>마이페이지</td></tr>
+  <tr><td><strong>F-16</strong></td><td>와인 라벨 OCR 등록</td><td>라벨 사진 촬영 → OCR → GPT 파싱 → wines 테이블 저장</td><td>마이페이지 (와인 추가)</td></tr>
+  <tr><td><strong>F-17</strong></td><td>상황 컨텍스트 선택</td><td>식당 상세에서 오늘의 상황 태그 선택 (데이트/친구 모임/비즈니스/혼술/가족 모임)</td><td>식당 상세</td></tr>
+  <tr><td><strong>F-18</strong></td><td>텍스트 후기 기반 취향 학습</td><td>후기 텍스트 → GPT 분석 → 취향 프로파일 수치 정밀 업데이트</td><td>AI 매칭</td></tr>
+</table>
+
+<h3>3.2 지원 기능</h3>
+
+<table>
+  <tr>
+    <th>ID</th>
+    <th>기능명</th>
+    <th>설명</th>
+    <th>관련 페이지</th>
+  </tr>
+  <tr><td><strong>F-20</strong></td><td>기본 인증</td><td>회원가입/로그인/로그아웃 (Supabase Auth)</td><td>회원가입, 로그인</td></tr>
+  <tr><td><strong>F-21</strong></td><td>취향 프로파일 관리</td><td>취향 데이터 저장/조회/업데이트</td><td>온보딩, 마이페이지</td></tr>
+</table>
+
+<h3>3.3 MVP 제외 기능</h3>
+<ul>
+  <li>소셜 로그인 (카카오, 구글)</li>
+  <li>식당 즐겨찾기/저장 목록</li>
+  <li>푸시 알림</li>
+  <li>포인트/배지 시스템</li>
+  <li>다국어 지원</li>
+</ul>
+
+<hr>
+
+<h2>4. 메뉴 구조</h2>
+
+<pre>[비로그인 상태]
+├─ 랜딩 페이지
+├─ 로그인
+└─ 회원가입
+
+[로그인 후 공통 하단 탭]
+├─ 홈 (주변 식당 목록)
+├─ AI 매칭 결과
+└─ 마이페이지
+
+[홈 → 식당 상세]
+└─ 메뉴 데이터 있는 식당만 표시
+    └─ 와인 선택 + 상황 선택 → 메뉴 목록 (페어링 점수) → 메뉴 선택 → AI 매칭
+
+[AI 매칭 페이지 내]
+└─ 방문 후 피드백 (좋아요/별로 + 텍스트 후기) → 취향 업데이트
+
+[마이페이지 내]
+├─ 취향 수정
+├─ 취향 변화 시각화
+└─ 내 와인 컬렉션 (와인 목록 / 와인 추가 / 라벨 OCR 등록)</pre>
+
+<hr>
+
+<h2>5. 페이지별 상세 기능</h2>
+
+<h3>랜딩 페이지</h3>
+<blockquote>구현 기능: F-20 | 인증: 불필요</blockquote>
+<table>
+  <tr><th>항목</th><th>내용</th></tr>
+  <tr><td><strong>역할</strong></td><td>서비스 첫 진입점, 로그인/회원가입 유도</td></tr>
+  <tr><td><strong>주요 기능</strong></td><td>서비스 핵심 가치 3줄 소개, <strong>회원가입</strong> 버튼, <strong>로그인</strong> 버튼</td></tr>
+  <tr><td><strong>다음 이동</strong></td><td>회원가입 → 회원가입 페이지, 로그인 → 로그인 페이지</td></tr>
+</table>
+
+<h3>회원가입 페이지</h3>
+<blockquote>구현 기능: F-20 | 인증: 불필요</blockquote>
+<table>
+  <tr><th>항목</th><th>내용</th></tr>
+  <tr><td><strong>주요 기능</strong></td><td>이메일 유효성 검사, 비밀번호 강도 검사 (최소 8자), 비밀번호 확인 일치, Supabase Auth signUp 호출</td></tr>
+  <tr><td><strong>다음 이동</strong></td><td>성공 → 온보딩 페이지, 실패 → 에러 메시지</td></tr>
+</table>
+
+<h3>로그인 페이지</h3>
+<blockquote>구현 기능: F-20 | 인증: 불필요</blockquote>
+<table>
+  <tr><th>항목</th><th>내용</th></tr>
+  <tr><td><strong>주요 기능</strong></td><td>이메일/비밀번호 입력, Supabase Auth signInWithPassword 호출, 온보딩 완료 여부 분기 처리</td></tr>
+  <tr><td><strong>다음 이동</strong></td><td>성공 + 온보딩 완료 → 홈, 성공 + 온보딩 미완료 → 온보딩, 실패 → 에러 메시지</td></tr>
+</table>
+
+<h3>온보딩 페이지</h3>
+<blockquote>구현 기능: F-01, F-02, F-21 | 인증: 필요</blockquote>
+<table>
+  <tr><th>항목</th><th>내용</th></tr>
+  <tr><td><strong>역할</strong></td><td>최초 1회 취향 프로파일 생성</td></tr>
+  <tr><td><strong>진입 경로</strong></td><td>회원가입 완료 후 자동 이동, 온보딩 미완료 로그인 시 자동 리디렉션</td></tr>
+  <tr><td><strong>주요 기능</strong></td><td>당도/산미/바디감/탄닌 슬라이더 (0.0~5.0, 0.1 단위) · 선호 향 멀티 선택 태그 (과일/오크/꽃/허브/스파이시) · <strong>못먹는 음식 멀티 선택 태그 (해산물/육류/유제품/글루텐/견과류)</strong> · 실시간 레이더 차트 시각화 · 취향 프로파일 DB 저장</td></tr>
+  <tr><td><strong>다음 이동</strong></td><td>저장 성공 → 홈, 실패 → 에러 토스트</td></tr>
+</table>
+
+<h3>홈 페이지</h3>
+<blockquote>구현 기능: F-04, F-06 | 인증: 필요</blockquote>
+<table>
+  <tr><th>항목</th><th>내용</th></tr>
+  <tr><td><strong>역할</strong></td><td>GPS 기반 주변 콜키지 식당 탐색 메인 화면</td></tr>
+  <tr><td><strong>주요 기능</strong></td><td>브라우저 Geolocation API로 GPS 좌표 획득 · 네이버 Local Search API 호출 (반경 2km) · <strong>menus 데이터가 1개 이상인 식당만 표시</strong> · 필터: 음식 카테고리 (한식/양식/이탈리안/일식/기타), 콜키지 무료 여부 · 정렬: 거리순/별점순 · 식당 카드: 이름/거리/별점/콜키지 비용/카테고리 표시 · 지도 뷰/리스트 뷰 전환</td></tr>
+  <tr><td><strong>다음 이동</strong></td><td>식당 카드 클릭 → 식당 상세 페이지</td></tr>
+</table>
+
+<h3>식당 상세 페이지</h3>
+<blockquote>구현 기능: F-05, F-12, F-17 | 인증: 필요</blockquote>
+<table>
+  <tr><th>항목</th><th>내용</th></tr>
+  <tr><td><strong>역할</strong></td><td>식당 정보 표시 + 와인/상황 선택 + 메뉴별 페어링 점수 확인 + 메뉴 선택</td></tr>
+  <tr><td><strong>주요 기능</strong></td><td>식당명/주소/전화번호/영업시간 표시 · 콜키지 조건 (비용/병 수 제한/예약 필요 여부) · <strong>와인 선택</strong>: 내 와인 컬렉션에서 선택 (미선택 시 취향 프로파일 기본값 사용) · <strong>상황 선택 태그</strong>: 데이트 / 친구 모임 / 비즈니스 / 혼술 / 가족 모임 · 메뉴 목록 표시 + 각 메뉴에 페어링 점수 아이콘 (★ 표시) · 못먹는 음식에 해당하는 메뉴 자동 필터 · 메뉴 선택 → AI 매칭 페이지 이동</td></tr>
+  <tr><td><strong>다음 이동</strong></td><td>메뉴 선택 → AI 매칭 페이지</td></tr>
+</table>
+
+<h3>AI 매칭 페이지</h3>
+<blockquote>구현 기능: F-13, F-14, F-18 | 인증: 필요</blockquote>
+<table>
+  <tr><th>항목</th><th>내용</th></tr>
+  <tr><td><strong>역할</strong></td><td>선택한 메뉴와 와인의 페어링 이유 상세 설명 + 피드백 후 취향 학습</td></tr>
+  <tr><td><strong>주요 기능</strong></td><td>선택 메뉴명/카테고리 표시 · 선택 와인 정보 표시 (또는 취향 프로파일 기반 가상 와인) · 오늘의 상황 표시 · <strong>GPT-4o 상황 맞춤 소믈리에 설명 2~3문장</strong> · 페어링 근거 요약 (탄닌/산미/바디감 기반) · <strong>피드백 버튼 (좋았어요 / 별로였어요) + 자유 텍스트 후기 선택 입력</strong> · 피드백 + 텍스트 후기 저장 → GPT 분석 → 취향 벡터 자동 업데이트</td></tr>
+  <tr><td><strong>다음 이동</strong></td><td>피드백 제출 → 업데이트 완료 토스트, 홈으로 돌아가기 버튼</td></tr>
+</table>
+
+<h3>마이페이지</h3>
+<blockquote>구현 기능: F-02, F-03, F-14, F-15, F-21 | 인증: 필요</blockquote>
+<table>
+  <tr><th>항목</th><th>내용</th></tr>
+  <tr><td><strong>주요 기능</strong></td><td>현재 취향 레이더 차트 · 슬라이더 수정 + 저장 · 취향 변화 시계열 비교 (3개월 전 vs 현재) · 피드백 이력 목록 · <strong>내 와인 컬렉션</strong>: 등록된 와인 목록 / 와인 추가 버튼 / 삭제 · 이메일 표시, 로그아웃 버튼</td></tr>
+  <tr><td><strong>다음 이동</strong></td><td>저장 성공 → 업데이트 완료 토스트, 로그아웃 → 랜딩 페이지, 와인 추가 → 와인 등록 페이지</td></tr>
+</table>
+
+<h3>와인 등록 페이지 (마이페이지 > 내 와인 컬렉션 > 추가)</h3>
+<blockquote>구현 기능: F-15, F-16 | 인증: 필요</blockquote>
+<table>
+  <tr><th>항목</th><th>내용</th></tr>
+  <tr><td><strong>역할</strong></td><td>내 와인 컬렉션에 새 와인 추가 (OCR 또는 수동 입력)</td></tr>
+  <tr><td><strong>주요 기능</strong></td><td><strong>와인 라벨 사진 촬영</strong> (MediaDevices API) → OCR → GPT 파싱 → 자동 입력 · 또는 수동 직접 입력 · 와인명 / 품종 / 빈티지 / 지역 입력 폼 · 탄닌/산미/바디감/당도 슬라이더 (OCR 시 자동 매핑, 수동 시 직접 조절) · 저장 → wines 테이블 저장</td></tr>
+  <tr><td><strong>다음 이동</strong></td><td>저장 성공 → 마이페이지 와인 컬렉션, 실패 → 에러 토스트</td></tr>
+</table>
+
+<hr>
+
+<h2>6. DB 스키마</h2>
+
+<h3>restaurants 테이블 (주요 필드)</h3>
+
+<table>
+  <tr>
+    <th>필드</th>
+    <th>설명</th>
+    <th>타입</th>
+  </tr>
+  <tr><td><code>id</code></td><td>식당 고유 ID</td><td>UUID</td></tr>
+  <tr><td><code>name</code></td><td>식당명</td><td>TEXT</td></tr>
+  <tr><td><code>address</code></td><td>주소</td><td>TEXT</td></tr>
+  <tr><td><code>lat / lng</code></td><td>GPS 좌표</td><td>FLOAT</td></tr>
+  <tr><td><code>category</code></td><td>음식 카테고리 (한식/양식/이탈리안/일식/기타)</td><td>TEXT</td></tr>
+  <tr><td><code>corkage_fee</code></td><td>콜키지 비용 (원, 0이면 무료)</td><td>INTEGER</td></tr>
+  <tr><td><code>corkage_limit</code></td><td>최대 콜키지 병 수</td><td>INTEGER</td></tr>
+  <tr><td><code>reservation_required</code></td><td>예약 필수 여부</td><td>BOOLEAN</td></tr>
+  <tr><td><code>hours</code></td><td>영업시간</td><td>TEXT</td></tr>
+  <tr><td><code>phone</code></td><td>전화번호</td><td>TEXT</td></tr>
+  <tr><td><code>image_url</code></td><td>대표 이미지 URL</td><td>TEXT</td></tr>
+  <tr style="background:#fff8e1"><td><code>naver_rating</code></td><td><strong>네이버 플레이스 초기 별점 (운영자 수기 입력)</strong></td><td>FLOAT</td></tr>
+  <tr style="background:#fff8e1"><td><code>rating</code></td><td><strong>앱 내 현재 별점</strong> (초기값 = naver_rating, 피드백 누적에 따라 베이지안 가중 평균으로 업데이트)</td><td>FLOAT</td></tr>
+  <tr style="background:#fff8e1"><td><code>feedback_count</code></td><td><strong>누적 피드백 수</strong> (별점 계산용)</td><td>INTEGER</td></tr>
+  <tr><td><code>created_at</code></td><td>생성일시</td><td>TIMESTAMPTZ</td></tr>
+</table>
+
+<hr>
+
+<h2>7. AI 파이프라인 명세</h2>
+
+<h3>7.1 와인 라벨 OCR 등록 파이프라인 (F-16)</h3>
+
+<pre>와인 라벨 사진 촬영
+    ↓
+Supabase Storage 업로드
+    ↓
+Google Cloud Vision API
+    → OCR 텍스트 추출 (라벨 한글/영문)
+    ↓
+GPT-4o-mini (Structured Output)
+    → 와인명 / 품종 / 빈티지 / 지역 파싱
+    → 해당 와인 특성 매핑 (탄닌/산미/바디감/당도 0.0~5.0)
+    ↓
+wines 테이블 저장</pre>
+
+<h3>7.2 메뉴 페어링 점수 계산 (식당 상세 페이지 진입 시)</h3>
+
+<pre>[와인 선택 시] wines 테이블에서 선택 와인 특성값 조회
+[미선택 시]   taste_profiles에서 사용자 취향 프로파일 조회 (폴백)
+    ↓
+못먹는 음식(dietary_restrictions) 해당 메뉴 제외
+    ↓
+와인 특성값 → 자연어 텍스트 변환
+    (예: "탄닌 4.0, 산미 3.5의 풀바디 레드 와인")
+    ↓
+OpenAI text-embedding-3-small → 쿼리 벡터 생성 (1536차원)
+    ↓
+pgvector cosine_similarity 검색 → 해당 식당 메뉴 유사도 계산
+    ↓
+와인-음식 페어링 가중치 적용
+    - 탄닌 × 지방성: +2.0  (탄닌이 지방과 결합하여 부드러운 미감)
+    - 산미 × 지방성: +1.5  (산미가 기름기를 정리하여 개운함)
+    - 탄닌 × 매운맛: -2.5  (둘 다 자극적이어서 충돌)
+    - 당도 (와인 >= 음식): +1.0  (와인이 더 달아야 균형)
+    - 바디감 × 감칠맛: +1.0  (풍부한 바디가 감칠맛과 조화)
+    ↓
+메뉴별 최종 페어링 점수 → 식당 상세 메뉴 목록에 ★ 아이콘으로 표시</pre>
+
+<h3>7.3 AI 소믈리에 설명 생성 (메뉴 선택 후, F-13)</h3>
+
+<pre>GPT-4o 입력값:
+    - 선택 와인 정보 (품종/지역/탄닌/산미/바디감/당도)
+    - 오늘의 상황 (데이트/친구모임/비즈니스/혼술/가족모임)
+    - 선택 메뉴 맛 프로파일 (fattiness/umami/spiciness 등)
+    - 페어링 점수 근거
+    ↓
+GPT-4o
+    → 상황 맞춤 소믈리에 스타일 페어링 이유 2~3문장 생성
+    예: "데이트 자리에 딱 어울리는 선택이에요.
+        이 와인의 섬세한 탄닌이 스테이크 지방과 만나 ..."
+    ↓
+AI 매칭 페이지 렌더링</pre>
+
+<h3>7.4 텍스트 후기 기반 취향 학습 (피드백 제출 시, F-18)</h3>
+
+<pre>피드백 제출 (좋아요/별로 + 텍스트 후기 선택 입력)
+    ↓
+[텍스트 후기 있을 경우]
+GPT-4o-mini → 텍스트에서 선호/비선호 요소 추출
+    예: "와인이 너무 강했어요" → 탄닌 과다로 해석
+    예: "산미가 음식의 기름기를 잡아줘서 좋았어요" → 산미×지방성 조합 선호 강화
+    → Structured Output: { tannin: -0.3, acidity: +0.2, body: 0, sweetness: 0 }
+    ↓
+[텍스트 없을 경우]
+    단순 +/- 방향 업데이트
+    ↓
+taste_profiles 수치 조정 (탄닌/산미/바디감/당도)
+feedbacks.profile_adjustments 에 조정값 로그 저장
+    ↓
+다음 추천부터 조정된 프로파일 반영</pre>
+
+<blockquote>모델 파인튜닝 아님. GPT가 텍스트를 분석해 구조화된 수치 조정값을 뽑아내는 방식.</blockquote>
+
+<h3>7.5 사용자 피드백 기반 식당 별점 업데이트 (피드백 제출 시)</h3>
+
+<pre>피드백 제출 (좋아요 또는 별로)
+    ↓
+restaurants 테이블에서 해당 식당의 naver_rating, feedback_count 조회
+    ↓
+베이지안 가중 평균 공식으로 새 rating 계산:
+
+    rating = (naver_rating × W + Σ feedback_score) / (W + feedback_count)
+
+    - W (초기 가중치) = 10  ← 피드백 10개 분량의 신뢰도를 네이버 별점에 부여
+    - feedback_score: 좋아요 = 5점, 별로 = 1점
+    - feedback_count: 해당 식당의 누적 피드백 수
+
+    예시:
+      네이버 별점 4.0, 피드백 없음  → rating = 4.0
+      피드백 5개 (좋아요 4, 별로 1) → (4.0×10 + 4×5 + 1×1) / (10+5) ≈ 4.07
+      피드백 50개 (좋아요 40, 별로 10) → (4.0×10 + 40×5 + 10×1) / (10+50) ≈ 4.17
+    ↓
+restaurants.rating, restaurants.feedback_count 업데이트</pre>
+
+<blockquote>
+  초기 피드백이 적을 때 별점이 과도하게 흔들리는 것을 방지하기 위해 베이지안 방식 사용.<br>
+  naver_rating은 운영자 수기 입력 시 네이버 플레이스에서 확인한 값으로 한 번만 설정되며 이후 변경되지 않음.
+</blockquote>
+
+<hr>
+
+<h2>8. 식당 데이터 전략</h2>
+
+<p>네이버 Local Search API는 식당 기본 정보(이름, 주소, 좌표, 전화번호, 카테고리)만 제공한다. 콜키지 조건과 메뉴 데이터는 API로 수집할 수 없으므로 아래 전략을 사용한다.</p>
+
+<h3>네이버 API 제공 범위</h3>
+
+<table>
+  <tr><th>데이터</th><th>제공 여부</th></tr>
+  <tr><td>식당명, 주소, 좌표</td><td>제공</td></tr>
+  <tr><td>전화번호, 음식 카테고리</td><td>제공</td></tr>
+  <tr><td>콜키지 허용 여부</td><td>미제공</td></tr>
+  <tr><td>콜키지 비용 / 병 수 제한</td><td>미제공</td></tr>
+  <tr><td>메뉴 항목 / 가격</td><td>미제공</td></tr>
+  <tr><td>영업시간</td><td>불안정 (미제공 케이스 多)</td></tr>
+</table>
+
+<h3>초기 데이터 구축 (운영자 직접 입력)</h3>
+<ul>
+  <li>강남/홍대 콜키지 식당 50곳을 네이버지도로 직접 조사</li>
+  <li>콜키지 허용 여부, 비용, 병 수 제한, 예약 필요 여부 확인 후 Supabase에 수기 입력</li>
+  <li>식당당 대표 메뉴 5~10개 직접 입력 (별도 admin 페이지 없이 Supabase 대시보드 직접 사용)</li>
+  <li>메뉴 입력 후 맛 프로파일 벡터화는 백그라운드 스크립트로 처리</li>
+</ul>
+
+<h3>홈 노출 기준</h3>
+<ul>
+  <li>menus 테이블에 해당 restaurant_id로 1개 이상의 메뉴가 존재하는 식당만 홈에 표시</li>
+  <li>메뉴 미입력 식당은 DB에 보관하되 유저에게 노출하지 않음</li>
+</ul>
+
+<h3>별점 및 콜키지 조건 관리</h3>
+<ul>
+  <li><strong>네이버 별점을 초기값으로 사용</strong>, 피드백 누적에 따라 앱 내 별점 진화 (베이지안 가중 평균, Section 7.5 참고)</li>
+  <li>운영자 수기 입력 시 네이버 플레이스에서 확인한 별점을 <code>naver_rating</code>으로 함께 입력</li>
+  <li>사용자가 콜키지 조건 변경 신고 → 운영자 확인 후 반영</li>
+</ul>
+
+<hr>
+
+<h2>9. 외부 API 연동</h2>
+
+<h3>Google Cloud Vision API (OCR)</h3>
+<ul>
+  <li>엔드포인트: <code>POST https://vision.googleapis.com/v1/images:annotate</code></li>
+  <li>인증: <code>GOOGLE_VISION_API_KEY</code></li>
+  <li>용도: 와인 라벨 텍스트 추출</li>
+  <li>요청: Base64 인코딩 이미지</li>
+  <li>응답: <code>textAnnotations[].description</code> 사용</li>
+  <li>무료 한도: 월 1,000건</li>
+</ul>
+
+<h3>OpenAI API</h3>
+
+<table>
+  <tr>
+    <th>모델</th>
+    <th>용도</th>
+    <th>예상 토큰</th>
+  </tr>
+  <tr><td>gpt-4o-mini</td><td>와인 라벨 파싱 (structured output)</td><td>입력 300 / 출력 150 per 라벨</td></tr>
+  <tr><td>gpt-4o-mini</td><td>맛 프로파일 벡터화</td><td>입력 100 / 출력 50 per 메뉴 항목</td></tr>
+  <tr><td>gpt-4o-mini</td><td>텍스트 후기 분석 → 취향 조정값 추출</td><td>입력 400 / 출력 100 per 후기</td></tr>
+  <tr><td>gpt-4o</td><td>소믈리에 설명 생성 (상황 컨텍스트 포함)</td><td>입력 1,000 / 출력 200 per 추천</td></tr>
+  <tr><td>text-embedding-3-small</td><td>메뉴/취향 임베딩</td><td>입력 100 per 항목</td></tr>
+</table>
+
+<p>인증: <code>OPENAI_API_KEY</code></p>
+
+<h3>네이버 Maps / Local Search API</h3>
+<ul>
+  <li>식당 검색: <code>GET https://openapi.naver.com/v1/search/local.json</code></li>
+  <li>지도 렌더링: Maps JavaScript API</li>
+  <li>인증: <code>NAVER_CLIENT_ID</code>, <code>NAVER_CLIENT_SECRET</code></li>
+</ul>
+
+<hr>
+
+<h2>10. 기술 스택</h2>
+
+<table>
+  <tr><th>분류</th><th>기술</th></tr>
+  <tr><td>프레임워크</td><td>Next.js 15 (App Router + Turbopack), React 19, TypeScript</td></tr>
+  <tr><td>스타일링</td><td>TailwindCSS v4, shadcn/ui, Lucide React</td></tr>
+  <tr><td>차트</td><td>Recharts</td></tr>
+  <tr><td>폼/검증</td><td>React Hook Form, Zod</td></tr>
+  <tr><td>DB/인증/스토리지</td><td>Supabase (Auth, PostgreSQL, pgvector, Storage)</td></tr>
+  <tr><td>AI</td><td>OpenAI API, Google Cloud Vision API</td></tr>
+  <tr><td>지도</td><td>네이버 Maps JavaScript API, 네이버 Local Search API</td></tr>
+  <tr><td>패키지</td><td>npm</td></tr>
+  <tr><td>배포</td><td>Vercel</td></tr>
+</table>
+
+<hr>
+
+<h2>14. 검증 시나리오</h2>
+
+<ul>
+  <li>와인 라벨 OCR → wines 테이블 저장 정상 확인</li>
+  <li>식당 상세에서 와인/상황 선택 후 페어링 점수 변화 확인</li>
+  <li>와인 미선택 시 취향 프로파일 폴백 동작 확인</li>
+  <li>텍스트 후기 입력 → GPT 분석 → taste_profiles 수치 변경 확인</li>
+  <li>데이트 vs 친구모임 상황에 따른 GPT 출력 차이 확인</li>
+  <li>홈에서 메뉴 없는 식당 미노출 확인</li>
+  <li>식당 등록 시 <code>naver_rating</code> = 4.2 입력 → <code>rating</code> = 4.2, <code>feedback_count</code> = 0 확인</li>
+  <li>좋아요 피드백 제출 → rating이 소폭 상승하는지 확인</li>
+  <li>별로 피드백 다수 제출 → rating이 하락하는지 확인</li>
+  <li>피드백 0개일 때 rating = naver_rating 동일 확인</li>
+  <li>홈 페이지 별점순 정렬 시 업데이트된 rating 기준으로 정렬되는지 확인</li>
+</ul>
+
+<hr>
+
+<h2>15. 페이지별 UI 와이어프레임</h2>
+
+<blockquote>모바일 앱 기준 | [ ] 버튼 · ( ) 입력칸 · ★ 페어링 점수 · ✓ 선택됨</blockquote>
+
+<h3>랜딩 페이지</h3>
+<pre>┌──────────────────────────┐
+│ 9:41               🔋   │
+├──────────────────────────┤
+│                          │
+│         🍷               │
+│      WinePair            │
+│                          │
+│  콜키지 식당에서 오늘,    │
+│  AI 소믈리에가 딱 맞는   │
+│  와인 페어링을 추천해요   │
+│                          │
+│  ✓ 내 와인 × 식당 메뉴   │
+│  ✓ 상황별 맞춤 추천      │
+│  ✓ 피드백으로 취향 학습  │
+│                          │
+│  ┌──────────────────┐   │
+│  │      회원가입     │   │
+│  └──────────────────┘   │
+│                          │
+│  ┌──────────────────┐   │
+│  │      로그인       │   │
+│  └──────────────────┘   │
+│                          │
+└──────────────────────────┘</pre>
+
+<h3>회원가입 페이지</h3>
+<pre>┌──────────────────────────┐
+│ 9:41               🔋   │
+├──────────────────────────┤
+│  ← 뒤로                  │
+│                          │
+│  회원가입                 │
+│                          │
+│  이메일                   │
+│  ┌──────────────────┐   │
+│  │ user@example.com │   │
+│  └──────────────────┘   │
+│                          │
+│  비밀번호 (8자 이상)       │
+│  ┌──────────────────┐   │
+│  │ ••••••••          │   │
+│  └──────────────────┘   │
+│  ████████░░  보통        │  ← 강도 표시
+│                          │
+│  비밀번호 확인             │
+│  ┌──────────────────┐   │
+│  │ ••••••••          │   │
+│  └──────────────────┘   │
+│  ✓ 비밀번호 일치          │
+│                          │
+│  ┌──────────────────┐   │
+│  │     가입하기      │   │
+│  └──────────────────┘   │
+│                          │
+│  이미 계정이 있나요? [로그인]│
+└──────────────────────────┘</pre>
+
+<blockquote>가입 성공 → 온보딩 페이지 자동 이동</blockquote>
+
+<h3>홈 페이지 (리스트 뷰)</h3>
+<pre>┌──────────────────────────┐
+│ 9:41               🔋   │
+├──────────────────────────┤
+│  📍 강남구 역삼동  [지도] │
+│  ────────────────────── │
+│  [한식][양식][이탈리안]    │
+│  [일식][기타][콜키지무료]  │
+│  정렬: [거리순▼] [별점순]  │
+│  ────────────────────── │
+│                          │
+│  ┌──────────────────┐   │
+│  │ 라 테이블  ★4.5  │   │
+│  │  이탈리안 · 350m  │   │
+│  │  콜키지 30,000원/병│   │
+│  │  [예약필요] [2병↑] │   │
+│  └──────────────────┘   │
+│  ┌──────────────────┐   │
+│  │ 온달한우   ★4.2  │   │
+│  │  한식 · 620m      │   │
+│  │  콜키지 무료       │   │
+│  └──────────────────┘   │
+│  ┌──────────────────┐   │
+│  │ 긴자스시   ★4.7  │   │
+│  │  일식 · 890m      │   │
+│  │  콜키지 20,000원/병│   │
+│  └──────────────────┘   │
+│                          │
+├──────────────────────────┤
+│  홈   AI매칭  MY          │
+└──────────────────────────┘</pre>
+
+<h3>식당 상세 페이지</h3>
+<pre>┌──────────────────────────┐
+│ 9:41               🔋   │
+├──────────────────────────┤
+│  ←  라 테이블             │
+│  [식당 대표 이미지]        │
+│  ★4.5  이탈리안  350m   │
+│  📍 강남구 역삼로 123    │
+│  📞 02-1234-5678        │
+│  11:00 – 22:00          │
+│  ────────────────────── │
+│  콜키지 조건              │
+│    비용: 30,000원/병     │
+│    제한: 최대 2병         │
+│    예약: 필수             │
+│  ────────────────────── │
+│  와인 선택                │
+│  [내 컬렉션에서 선택 ▼]   │
+│   └ 까베르네 소비뇽 2019  │
+│  ────────────────────── │
+│  오늘의 상황              │
+│  [데이트✓][친구모임]       │
+│  [비즈니스][혼술][가족모임] │
+│  ────────────────────── │
+│  메뉴 (못먹는 음식 제외)   │
+│                          │
+│  ┌──────────────────┐   │
+│  │ 티본스테이크 ★★★★☆│   │
+│  │  메인 · 58,000원  │   │
+│  └──────────────────┘   │
+│  ┌──────────────────┐   │
+│  │ 해산물파스타 🚫   │   │
+│  │  (해산물 제한)    │   │
+│  └──────────────────┘   │
+│  ┌──────────────────┐   │
+│  │  카프레제  ★★★★★│   │
+│  │  전채 · 18,000원  │   │
+│  └──────────────────┘   │
+│                          │
+├──────────────────────────┤
+│  홈   AI매칭  MY          │
+└──────────────────────────┘</pre>
+
+<h3>AI 매칭 페이지</h3>
+<pre>┌──────────────────────────┐
+│ 9:41               🔋   │
+├──────────────────────────┤
+│  ←  AI 소믈리에 추천       │
+│  ────────────────────── │
+│  🍽️  티본스테이크          │
+│  🍷  까베르네 소비뇽 2019  │
+│  🎭  데이트                │
+│  ────────────────────── │
+│                          │
+│  소믈리에 추천              │
+│  ┌──────────────────┐   │
+│  │ 데이트 자리에 딱  │   │
+│  │ 어울리는 선택이에 │   │
+│  │ 요. 이 와인의 섬  │   │
+│  │ 세한 탄닌이 스테  │   │
+│  │ 이크 지방과 만나  │   │
+│  │ 부드러운 미감을   │   │
+│  │ 선사합니다.       │   │
+│  └──────────────────┘   │
+│                          │
+│  페어링 근거               │
+│  탄닌 × 지방성   +2.0 ✓  │
+│  산미 × 지방성   +1.5 ✓  │
+│  바디감 × 감칠맛  +1.0 ✓  │
+│  ────────────────────── │
+│  방문하셨나요?             │
+│  [👍 좋았어요] [👎 별로]   │
+│                          │
+│  ┌──────────────────┐   │
+│  │ 한 줄 후기 (선택) │   │
+│  └──────────────────┘   │
+│  ┌──────────────────┐   │
+│  │     후기 제출     │   │
+│  └──────────────────┘   │
+│                          │
+├──────────────────────────┤
+│  홈   AI매칭  MY          │
+└──────────────────────────┘</pre>
+
+<h3>마이페이지</h3>
+<pre>┌──────────────────────────┐
+│ 9:41               🔋   │
+├──────────────────────────┤
+│  마이페이지       [로그아웃]│
+│  user@example.com        │
+│  ────────────────────── │
+│                          │
+│  내 취향 프로파일          │
+│  ┌──── 레이더 차트 ──────┐│
+│  │          산미         ││
+│  │   현재 ──  3개월전 ·· ││
+│  │       ╱──╲           ││
+│  │   탄닌     바디감      ││
+│  │       ╲──╱           ││
+│  │          당도         ││
+│  └──────────────────────┘│
+│      [✏️ 취향 수정하기]    │
+│  ────────────────────── │
+│                          │
+│  내 와인 컬렉션 (2)       │
+│  ┌──────────────────┐   │
+│  │ 까베르네 2019  [🗑]│   │
+│  │   보르도, 프랑스  │   │
+│  └──────────────────┘   │
+│  ┌──────────────────┐   │
+│  │   + 와인 추가하기  │   │
+│  └──────────────────┘   │
+│  ────────────────────── │
+│  피드백 이력               │
+│  👍 티본 + 까베르네 소비뇽 │
+│  👎 파스타 + 샤르도네      │
+│                          │
+├──────────────────────────┤
+│  홈   AI매칭  MY          │
+└──────────────────────────┘</pre>
+
+<h3>페이지 네비게이션 흐름</h3>
+<pre>[비로그인 상태]
+  랜딩 ──→ 회원가입 ──→ 온보딩 ──→ 홈
+        └─→ 로그인  ──┬─ 온보딩 미완료 → 온보딩 → 홈
+                     └─ 온보딩 완료   →          홈
+
+[로그인 후 - 하단 탭 3개]
+  홈 ──→ 식당 상세 ──→ AI 매칭 ──→ 홈
+             (와인/상황 선택)  └─ 피드백 제출
+             (메뉴 페어링 점수)       → 취향 벡터 업데이트
+
+  마이페이지 ──→ 취향 수정
+             └─→ 와인 추가 ──→ 와인 등록 ──→ 마이페이지</pre>
+
+</body>
+</html>

@@ -1,0 +1,32 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pandoc:*)",
+      "Bash(node:*)",
+      "Bash(start:*)",
+      "Bash(py --version)",
+      "Read(//c/Users/sh088/AppData/Local/Programs/**)",
+      "Bash(ls /c/Python*)",
+      "Read(//c/Users/sh088/miniconda3/**)",
+      "Read(//c/Users/sh088/anaconda3/**)",
+      "Read(//c/Users/sh088/AppData/Local/Microsoft/WindowsApps/**)",
+      "Bash(/c/Users/sh088/AppData/Local/Microsoft/WindowsApps/python.exe:*)",
+      "Bash(python:*)",
+      "Bash(rm:*)",
+      "Skill(commit)",
+      "Bash(claude mcp:*)",
+      "Bash(python3:*)",
+      "Bash(npx:*)",
+      "Bash(npm show:*)",
+      "mcp__sequential-thinking__sequentialthinking",
+      "mcp__shadcn__list_shadcn_components",
+      "mcp__shadcn__get_component_details",
+      "Bash(npm create:*)",
+      "Bash(npm install:*)",
+      "Bash(npm cache:*)",
+      "Bash(npm config:*)",
+      "Bash(npm run:*)",
+      "Bash(ls:*)"
+    ]
+  }
+}

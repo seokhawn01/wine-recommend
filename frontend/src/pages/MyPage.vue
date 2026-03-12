@@ -4,166 +4,165 @@ import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { useTasteStore } from '@/stores/taste'
 import { wines, mockUserProfile } from '@/mock/data'
-import TasteRadarChart from '@/components/chart/TasteRadarChart.vue'
+import TasteNebulaChart from '@/components/chart/TasteNebulaChart.vue'
 import WineCard from '@/components/wine/WineCard.vue'
 import Button from '@/components/ui/button/Button.vue'
 import Badge from '@/components/ui/badge/Badge.vue'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { Settings, Plus, ChevronRight, ThumbsUp, ThumbsDown } from 'lucide-vue-next'
 
 const router = useRouter()
 const authStore = useAuthStore()
 const tasteStore = useTasteStore()
 
-// Mock 와인 컬렉션
 const myWines = ref(wines.slice(0, 4))
-
 const profile = authStore.user || mockUserProfile
 
-// 취향 라벨 변환
-function getTasteLabel(value, low, high) {
-  if (value >= 4) return high
-  if (value >= 2.5) return '보통'
-  return low
-}
+const tasteItems = [
+  { label: '타닌', value: () => tasteStore.tannin, low: '부드러움', high: '떫음', color: 'bg-purple-500' },
+  { label: '산미', value: () => tasteStore.acidity, low: '묵직함', high: '상큼함', color: 'bg-blue-500' },
+  { label: '바디', value: () => tasteStore.body, low: '라이트', high: '풀바디', color: 'bg-rose-500' },
+  { label: '당도', value: () => tasteStore.sweetness, low: '드라이', high: '스위트', color: 'bg-amber-500' },
+]
+
+const feedbacks = [
+  { icon: ThumbsUp, text: '티본스테이크 + 까베르네 소비뇽', sub: '데이트 · 2일 전', positive: true },
+  { icon: ThumbsDown, text: '해산물 파스타 + 샤르도네', sub: '친구 모임 · 1주 전', positive: false },
+]
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-50">
-    <div class="max-w-7xl mx-auto px-6 py-8">
-      <h1 class="text-2xl font-bold text-gray-900 mb-8">마이페이지</h1>
+  <div class="min-h-screen bg-[#FFF8F0]">
+    <!-- 헤더 -->
+    <header class="flex items-center justify-between px-5 pt-12 pb-4">
+      <h1 class="text-lg font-bold text-[#722F37]">마이페이지</h1>
+      <button class="p-2" @click="router.push('/onboarding')">
+        <Settings :size="20" class="text-gray-500" />
+      </button>
+    </header>
 
-      <!-- 메인 2열 레이아웃 -->
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <!-- 왼쪽: 프로필 -->
-        <div class="lg:col-span-1 space-y-6">
-          <!-- 프로필 카드 -->
-          <div class="bg-white rounded-xl p-6 shadow-sm">
-            <div class="flex items-center gap-4 mb-6">
-              <Avatar class="w-16 h-16">
-                <AvatarFallback class="text-2xl text-[#722F37] bg-[#FFF8F0]">
-                  {{ profile.nickname?.charAt(0) || 'U' }}
-                </AvatarFallback>
-              </Avatar>
-              <div>
-                <h2 class="font-bold text-gray-900 text-lg">{{ profile.nickname }}</h2>
-                <p class="text-sm text-gray-500">{{ profile.email }}</p>
-                <div class="flex gap-2 mt-2">
-                  <Badge variant="secondary" class="text-xs">와인 {{ myWines.length }}병</Badge>
-                  <Badge variant="secondary" class="text-xs">리뷰 0개</Badge>
-                </div>
-              </div>
-            </div>
-            <Button
-              variant="outline"
-              class="w-full text-gray-500"
-              @click="authStore.logout(); router.push('/login')"
-            >
-              로그아웃
-            </Button>
-          </div>
-
-          <!-- 취향 프로파일 카드 -->
-          <div class="bg-white rounded-xl p-6 shadow-sm">
-            <div class="flex items-center justify-between mb-4">
-              <h3 class="font-bold text-gray-800">🍷 내 와인 취향</h3>
-              <router-link to="/onboarding" class="text-xs text-[#722F37] font-medium hover:underline">재설정 →</router-link>
-            </div>
-
-            <!-- 레이더 차트 -->
-            <div class="flex justify-center mb-4">
-              <TasteRadarChart
-                :tannin="tasteStore.tannin"
-                :acidity="tasteStore.acidity"
-                :body="tasteStore.body"
-                :sweetness="tasteStore.sweetness"
-                size="lg"
-              />
-            </div>
-
-            <!-- 수치 표시 -->
-            <div class="grid grid-cols-2 gap-2.5">
-              <div v-for="item in [
-                { label: '타닌', value: tasteStore.tannin, low: '부드러움', high: '떫음' },
-                { label: '산미', value: tasteStore.acidity, low: '묵직함', high: '상큼함' },
-                { label: '바디감', value: tasteStore.body, low: '라이트', high: '풀바디' },
-                { label: '당도', value: tasteStore.sweetness, low: '드라이', high: '스위트' },
-              ]" :key="item.label"
-                class="bg-gray-50 rounded-lg p-3"
-              >
-                <div class="flex items-center justify-between mb-1.5">
-                  <span class="text-xs text-gray-600">{{ item.label }}</span>
-                  <span class="text-xs font-bold text-[#722F37]">{{ item.value.toFixed(1) }}</span>
-                </div>
-                <div class="w-full bg-gray-200 rounded-full h-1.5">
-                  <div
-                    class="h-1.5 bg-[#722F37] rounded-full"
-                    :style="{ width: `${(item.value / 5) * 100}%` }"
-                  />
-                </div>
-                <p class="text-xs text-gray-400 mt-1">{{ getTasteLabel(item.value, item.low, item.high) }}</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- 선호 향 -->
-          <div class="bg-white rounded-xl p-6 shadow-sm">
-            <h3 class="font-semibold text-gray-800 mb-3">🌸 선호 향</h3>
-            <div v-if="tasteStore.preferredAromas.length" class="flex flex-wrap gap-2">
-              <Badge v-for="a in tasteStore.preferredAromas" :key="a" variant="default" class="text-xs">
-                {{ a }}
-              </Badge>
-            </div>
-            <p v-else class="text-sm text-gray-400">
-              설정된 선호 향이 없습니다.
-              <router-link to="/onboarding" class="text-[#722F37]">설정하기</router-link>
-            </p>
+    <!-- 프로필 카드 -->
+    <section class="mx-5 bg-white rounded-2xl p-5 shadow-sm mb-4">
+      <div class="flex items-center gap-4">
+        <Avatar class="w-14 h-14">
+          <AvatarFallback class="text-xl text-[#722F37] bg-[#FFF8F0]">
+            {{ profile.nickname?.charAt(0) || 'U' }}
+          </AvatarFallback>
+        </Avatar>
+        <div class="flex-1">
+          <h2 class="font-bold text-gray-900">{{ profile.nickname }}</h2>
+          <p class="text-xs text-gray-400">{{ profile.email }}</p>
+          <div class="flex gap-2 mt-1.5">
+            <Badge variant="secondary" class="text-xs">와인 {{ myWines.length }}병</Badge>
+            <Badge variant="secondary" class="text-xs">리뷰 0개</Badge>
           </div>
         </div>
+        <button
+          class="text-xs text-gray-400 border border-gray-200 px-2.5 py-1.5 rounded-lg"
+          @click="authStore.logout(); router.push('/login')"
+        >
+          로그아웃
+        </button>
+      </div>
+    </section>
 
-        <!-- 오른쪽: 와인 컬렉션 + 피드백 이력 -->
-        <div class="lg:col-span-2 space-y-6">
-          <!-- 와인 컬렉션 -->
-          <div class="bg-white rounded-xl p-6 shadow-sm">
-            <div class="flex items-center justify-between mb-5">
-              <h3 class="font-bold text-gray-800 text-lg">🍾 내 와인 컬렉션</h3>
-              <Button size="sm" @click="router.push('/wine/register')">
-                + 와인 추가
-              </Button>
-            </div>
+    <!-- 취향 성운 -->
+    <section class="mx-5 bg-white rounded-2xl p-5 shadow-sm mb-4">
+      <div class="flex items-center justify-between mb-1">
+        <h3 class="text-sm font-bold text-gray-800">🍷 내 와인 취향 성운</h3>
+        <button class="text-xs text-[#722F37]" @click="router.push('/onboarding')">
+          재설정 →
+        </button>
+      </div>
 
-            <div v-if="myWines.length" class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
-              <WineCard v-for="wine in myWines" :key="wine.id" :wine="wine" />
-            </div>
-            <div v-else class="py-16 text-center">
-              <div class="text-4xl mb-3">🍾</div>
-              <p class="text-gray-500 text-sm mb-4">아직 등록된 와인이 없습니다.</p>
-              <Button @click="router.push('/wine/register')">첫 와인 등록하기</Button>
-            </div>
+      <!-- 성운 시각화 -->
+      <div class="flex justify-center my-2">
+        <TasteNebulaChart
+          :tannin="tasteStore.tannin"
+          :acidity="tasteStore.acidity"
+          :body="tasteStore.body"
+          :sweetness="tasteStore.sweetness"
+          :size="220"
+        />
+      </div>
+
+      <!-- 바 형태 수치 -->
+      <div class="grid grid-cols-2 gap-2.5 mt-1">
+        <div
+          v-for="item in tasteItems"
+          :key="item.label"
+          class="bg-gray-50 rounded-xl p-3"
+        >
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="text-xs text-gray-600">{{ item.label }}</span>
+            <span class="text-xs font-bold text-[#722F37]">{{ item.value().toFixed(1) }}</span>
           </div>
-
-          <!-- 피드백 이력 -->
-          <div class="bg-white rounded-xl p-6 shadow-sm">
-            <h3 class="font-bold text-gray-800 text-lg mb-4">📋 피드백 이력</h3>
-            <div class="space-y-3">
-              <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                <span class="text-xl">👍</span>
-                <div>
-                  <p class="text-sm font-medium text-gray-800">티본스테이크 + 까베르네 소비뇽</p>
-                  <p class="text-xs text-gray-400">데이트 · 2일 전</p>
-                </div>
-              </div>
-              <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                <span class="text-xl">👎</span>
-                <div>
-                  <p class="text-sm font-medium text-gray-800">해산물 파스타 + 샤르도네</p>
-                  <p class="text-xs text-gray-400">친구 모임 · 1주 전</p>
-                </div>
-              </div>
-              <p class="text-xs text-gray-400 text-center pt-2">피드백이 쌓일수록 AI 추천이 더 정확해집니다</p>
-            </div>
+          <div class="w-full bg-gray-200 rounded-full h-1.5">
+            <div
+              :class="['h-1.5 rounded-full', item.color]"
+              :style="{ width: `${(item.value() / 5) * 100}%` }"
+            />
           </div>
         </div>
       </div>
-    </div>
+
+      <!-- 선호 향 -->
+      <div v-if="tasteStore.preferredAromas.length" class="mt-4 flex flex-wrap gap-1.5">
+        <Badge v-for="a in tasteStore.preferredAromas" :key="a" variant="default" class="text-xs">
+          {{ a }}
+        </Badge>
+      </div>
+    </section>
+
+    <!-- 내 와인 컬렉션 -->
+    <section class="mx-5 bg-white rounded-2xl p-5 shadow-sm mb-4">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-sm font-bold text-gray-800">🍾 내 와인 컬렉션</h3>
+        <button
+          class="flex items-center gap-1 text-xs text-[#722F37] bg-[#FFF8F0] px-2.5 py-1.5 rounded-lg font-medium"
+          @click="router.push('/ocr')"
+        >
+          <Plus :size="13" /> 추가
+        </button>
+      </div>
+
+      <div v-if="myWines.length" class="grid grid-cols-2 gap-3">
+        <WineCard v-for="wine in myWines" :key="wine.id" :wine="wine" />
+      </div>
+      <div v-else class="py-10 text-center">
+        <p class="text-3xl mb-2">🍾</p>
+        <p class="text-sm text-gray-400 mb-3">아직 등록된 와인이 없어요</p>
+        <Button size="sm" @click="router.push('/ocr')">첫 와인 등록</Button>
+      </div>
+    </section>
+
+    <!-- 피드백 이력 -->
+    <section class="mx-5 bg-white rounded-2xl p-5 shadow-sm mb-4">
+      <div class="flex items-center justify-between mb-3">
+        <h3 class="text-sm font-bold text-gray-800">📋 피드백 이력</h3>
+        <button class="flex items-center gap-0.5 text-xs text-[#722F37]">
+          전체 보기 <ChevronRight :size="13" />
+        </button>
+      </div>
+
+      <div class="space-y-2.5">
+        <div
+          v-for="fb in feedbacks"
+          :key="fb.text"
+          class="flex items-center gap-3 p-3 bg-gray-50 rounded-xl"
+        >
+          <div :class="['w-8 h-8 rounded-full flex items-center justify-center shrink-0', fb.positive ? 'bg-green-100' : 'bg-red-100']">
+            <component :is="fb.icon" :size="14" :class="fb.positive ? 'text-green-600' : 'text-red-500'" />
+          </div>
+          <div>
+            <p class="text-xs font-medium text-gray-800">{{ fb.text }}</p>
+            <p class="text-[10px] text-gray-400 mt-0.5">{{ fb.sub }}</p>
+          </div>
+        </div>
+      </div>
+      <p class="text-[10px] text-gray-400 text-center mt-3">
+        피드백이 쌓일수록 AI 추천이 더 정확해져요 ✨
+      </p>
+    </section>
   </div>
 </template>

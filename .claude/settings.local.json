@@ -34,7 +34,11 @@
       "mcp__playwright__browser_fill_form",
       "mcp__playwright__browser_click",
       "mcp__playwright__browser_network_requests",
-      "Bash(pkill -f \"vite --port 5173\" 2>/dev/null; sleep 1; echo \"서버 종료\")"
+      "Bash(pkill -f \"vite --port 5173\" 2>/dev/null; sleep 1; echo \"서버 종료\")",
+      "Bash(git push:*)",
+      "Bash(cd D:/workspace/wine_recommend/frontend && printf 'N\\\\nN\\\\nN\\\\nN\\\\nN\\\\nN\\\\nN\\\\nN\\\\nN\\\\nN\\\\n' | npx shadcn-vue@latest add sheet scroll-area carousel 2>&1)",
+      "mcp__playwright__browser_resize",
+      "mcp__playwright__browser_take_screenshot"
     ]
   }
 }

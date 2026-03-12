@@ -7,6 +7,8 @@ import RestaurantDetailPage from '@/pages/RestaurantDetailPage.vue'
 import AiMatchPage from '@/pages/AiMatchPage.vue'
 import MyPage from '@/pages/MyPage.vue'
 import WineRegisterPage from '@/pages/WineRegisterPage.vue'
+import MapPage from '@/pages/MapPage.vue'
+import OcrPage from '@/pages/OcrPage.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -16,9 +18,11 @@ const router = createRouter({
     { path: '/signup', component: SignupPage },
     { path: '/onboarding', component: OnboardingPage },
     { path: '/home', component: HomePage },
+    { path: '/map', component: MapPage },
     { path: '/restaurant/:id', component: RestaurantDetailPage },
     { path: '/match', component: AiMatchPage },
     { path: '/mypage', component: MyPage },
+    { path: '/ocr', component: OcrPage },
     { path: '/wine/register', component: WineRegisterPage },
   ],
   scrollBehavior() {

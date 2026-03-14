@@ -1,18 +1,19 @@
 <script setup>
 /**
- * OcrPage.vue — 와인 라벨 OCR 촬영 전용 (모바일)
- * 메뉴는 DB에서 제공하므로 OCR 대상은 와인 라벨만.
+ * OcrPage.vue — 와인 라벨 촬영 전용 (모바일)
+ * GPT Vision(gpt-4o-mini)으로 라벨 이미지 → 와인 정보 자동 추출
  */
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import Button from '@/components/ui/button/Button.vue'
 import Slider from '@/components/ui/slider/Slider.vue'
-import { Camera, X, Check, RotateCcw } from 'lucide-vue-next'
+import { Camera, X, Check, RotateCcw, AlertCircle } from 'lucide-vue-next'
+import { useWineVision } from '@/composables/useWineVision'
 
 const router = useRouter()
+const { analyzeWineLabel, isLoading: isOcrLoading, error: visionError } = useWineVision()
 
 const previewImage = ref(null)
-const isOcrLoading = ref(false)
 const isSubmitting = ref(false)
 const step = ref('capture') // 'capture' | 'edit' | 'done'
 
@@ -48,27 +49,32 @@ function handleImageUpload(e) {
   const reader = new FileReader()
   reader.onload = (ev) => {
     previewImage.value = ev.target.result
-    runMockOcr()
+    runVisionOcr(ev.target.result)
   }
   reader.readAsDataURL(file)
 }
 
-function runMockOcr() {
-  isOcrLoading.value = true
+async function runVisionOcr(imageDataUrl) {
   step.value = 'capture'
-  setTimeout(() => {
-    form.value.name = '카베르네 소비뇽 리저브 2021'
-    form.value.grape = '카베르네 소비뇽'
-    form.value.region = '나파 밸리, 캘리포니아'
-    form.value.vintage = '2021'
-    form.value.type = 'red'
-    form.value.tannin = 4.0
-    form.value.acidity = 3.0
-    form.value.body = 4.5
-    form.value.sweetness = 1.5
-    isOcrLoading.value = false
-    step.value = 'edit'
-  }, 1800)
+  const result = await analyzeWineLabel(imageDataUrl)
+
+  if (!result) {
+    // 에러는 visionError에 이미 담겨 있음
+    step.value = 'capture'
+    return
+  }
+
+  // GPT 응답을 form에 적용
+  form.value.name = result.name
+  form.value.grape = result.grape
+  form.value.region = result.region
+  form.value.vintage = result.vintage
+  form.value.type = result.type
+  form.value.tannin = result.tannin
+  form.value.acidity = result.acidity
+  form.value.body = result.body
+  form.value.sweetness = result.sweetness
+  step.value = 'edit'
 }
 
 function handleReset() {
@@ -131,7 +137,7 @@ function handleSubmit() {
               class="absolute inset-0 bg-black/40 flex flex-col items-center justify-center"
             >
               <div class="w-8 h-8 border-3 border-white border-t-transparent rounded-full animate-spin mb-2" />
-              <p class="text-white text-sm font-medium">라벨 인식 중...</p>
+              <p class="text-white text-sm font-medium">GPT Vision 분석 중...</p>
             </div>
           </div>
           <input type="file" accept="image/*" capture="environment" class="hidden" @change="handleImageUpload" />
@@ -141,6 +147,15 @@ function handleSubmit() {
         <button v-if="previewImage && !isOcrLoading" class="flex items-center gap-1.5 text-xs text-gray-500 mt-2 mx-auto" @click="handleReset">
           <RotateCcw :size="12" /> 다시 촬영
         </button>
+
+        <!-- Vision API 에러 표시 -->
+        <div v-if="visionError" class="mt-3 flex items-start gap-2 p-3 bg-red-50 rounded-xl border border-red-200">
+          <AlertCircle :size="16" class="text-red-500 shrink-0 mt-0.5" />
+          <div>
+            <p class="text-xs font-semibold text-red-700">라벨 인식 실패</p>
+            <p class="text-xs text-red-600 mt-0.5">{{ visionError }}</p>
+          </div>
+        </div>
       </div>
 
       <!-- OCR 결과 편집 -->

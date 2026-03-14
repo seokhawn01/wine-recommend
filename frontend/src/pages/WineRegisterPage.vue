@@ -6,8 +6,10 @@ import Input from '@/components/ui/input/Input.vue'
 import Slider from '@/components/ui/slider/Slider.vue'
 import Badge from '@/components/ui/badge/Badge.vue'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
+import { useWineVision } from '@/composables/useWineVision'
 
 const router = useRouter()
+const { analyzeWineLabel, isLoading: isOcrLoading, error: visionError } = useWineVision()
 
 // 와인 등록 폼 상태
 const form = ref({
@@ -23,7 +25,6 @@ const form = ref({
 })
 
 const previewImage = ref(null)
-const isOcrLoading = ref(false)
 const isSubmitting = ref(false)
 
 const wineTypes = [
@@ -46,21 +47,24 @@ function handleImageUpload(e) {
   const reader = new FileReader()
   reader.onload = (ev) => {
     previewImage.value = ev.target.result
-    triggerOcr()
+    triggerVisionOcr(ev.target.result)
   }
   reader.readAsDataURL(file)
 }
 
-function triggerOcr() {
-  isOcrLoading.value = true
-  // Mock OCR 처리
-  setTimeout(() => {
-    form.value.name = '카베르네 소비뇽 2021'
-    form.value.grape = '카베르네 소비뇽'
-    form.value.region = '나파 밸리, 캘리포니아'
-    form.value.vintage = '2021'
-    isOcrLoading.value = false
-  }, 1500)
+async function triggerVisionOcr(imageDataUrl) {
+  const result = await analyzeWineLabel(imageDataUrl)
+  if (!result) return // 에러는 visionError에 담김
+
+  form.value.name = result.name
+  form.value.grape = result.grape
+  form.value.region = result.region
+  form.value.vintage = result.vintage
+  form.value.type = result.type
+  form.value.tannin = result.tannin
+  form.value.acidity = result.acidity
+  form.value.body = result.body
+  form.value.sweetness = result.sweetness
 }
 
 function handleSubmit() {
@@ -131,13 +135,22 @@ function handleSubmit() {
                   <input type="file" accept="image/*" class="hidden" @change="handleImageUpload" />
                 </label>
 
-                <!-- OCR 로딩 -->
+                <!-- Vision 분석 로딩 -->
                 <div v-if="isOcrLoading" class="mt-4 flex items-center gap-2 text-sm text-gray-500">
                   <div class="w-4 h-4 border-2 border-[#722F37] border-t-transparent rounded-full animate-spin" />
-                  라벨 정보를 인식하고 있습니다...
+                  GPT Vision으로 라벨 분석 중...
                 </div>
 
-                <!-- OCR 결과 -->
+                <!-- Vision 에러 -->
+                <div v-if="visionError" class="mt-4 flex items-start gap-2 p-3 bg-red-50 rounded-xl border border-red-200">
+                  <span class="text-red-500 text-base shrink-0">⚠️</span>
+                  <div>
+                    <p class="text-xs font-semibold text-red-700">라벨 인식 실패</p>
+                    <p class="text-xs text-red-600 mt-0.5">{{ visionError }}</p>
+                  </div>
+                </div>
+
+                <!-- Vision 결과 -->
                 <div v-if="previewImage && !isOcrLoading && form.name" class="mt-4 p-4 bg-[#FFF8F0] rounded-xl border border-[#722F37]/10">
                   <p class="text-xs font-semibold text-[#722F37] mb-2">✅ 인식된 정보</p>
                   <p class="font-semibold text-gray-900">{{ form.name }}</p>
